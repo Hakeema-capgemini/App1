@@ -1,9 +1,9 @@
 package com.example.project.util;
 
 public class Constants {
-	
+
 	public static final String USER_CREATION_LOG = "User Created Successfully";
-	public static final String HEALTH_CHECK_MESSAGE = "Application Runs Successfully";
+	public static final String HEALTH_CHECK_MESSAGE = "Backend call successful";
 	public static final String RETRIEVE_USER_LOG = "Retrievd user ";
 	public static final String CREATE_USER_LOG = "Created user";
 	public static final String MAPPING_USER_LOG = "Mapping dto to vo";

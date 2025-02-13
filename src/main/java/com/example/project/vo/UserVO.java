@@ -10,31 +10,38 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table(name = "Students")
 public class UserVO {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+		 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-    @NotNull
+	@NotNull
 	private String name;
-    @NotNull
+	@NotNull
 	private int age;
-	
+
+
 	public long getId() {
 		return id;
 	}
+
 	public void setId(long id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public int getAge() {
 		return age;
 	}
+
 	public void setAge(int age) {
 		this.age = age;
 	}
-	
+
 }

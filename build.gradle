@@ -2,7 +2,9 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
+    id 'io.gatling.gradle' version '3.13.1' 
 }
+
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -30,44 +32,100 @@ sourceSets {
 		}
 	}
 }
-
+sourceSets {
+    test {
+        resources.srcDir 'src/test/resources'
+    }
+}
 dependencies {
-	// Spring Boot dependencies
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-	//Cloud config server
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Spring Boot dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-config-server'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
-    //Implementing cloud gateaway
- //   implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    
 
-	// Lombok for boilerplate code
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    // Lombok for boilerplate code
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	// MapStruct for mapping DTOs
-	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
-	// Database (H2)
-	runtimeOnly 'com.h2database:h2'
+    // MapStruct for mapping DTOs
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
-	// OpenAPI Documentation
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+    // Database (H2)
+    implementation 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework:spring-jdbc'
+    
+    // Spring Batch dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework.batch:spring-batch-core'
+    implementation 'org.springframework.batch:spring-batch-infrastructure'
 
-	// Testing dependencies
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // For writing to CSV
+    implementation 'com.opencsv:opencsv:5.6'
+    implementation 'org.springframework:spring-oxm'
+
+    // Testing dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test' // JUnit 5 included
+    testImplementation 'org.mockito:mockito-core' // Mockito core
+    testImplementation 'org.mockito:mockito-junit-jupiter' // Mockito with JUnit 5
+    // Cucumber dependencies (JUnit 5 + Cucumber 5.x)
+    testImplementation 'io.cucumber:cucumber-java:7.13.0'
+    implementation 'io.cucumber:cucumber-spring:7.13.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.13.0'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.13.0'
+    
+    // Wiremock
+    testImplementation "org.wiremock:wiremock-standalone:3.10.0"
+    
+    // Circuitbreaker
+    implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.0.2'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator' 
+    
+    // JAXB
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    implementation 'org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.2'
+    implementation 'jakarta.json:jakarta.json-api:2.1.1' 
+    implementation 'org.glassfish:jakarta.json:2.0.1' 
+    
+    // Gatling
+    implementation 'io.gatling.highcharts:gatling-charts-highcharts:3.13.1' 
+    implementation 'io.gatling:gatling-core:3.13.1' 
+    implementation 'io.gatling:gatling-http:3.13.1' 
+    //thymleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' 
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
+    
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+    //implementation 'org.springdoc:springdoc-openapi-ui:2.6.0'
+    //zipkin
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+	//pact
+	 testImplementation 'au.com.dius.pact.provider:junit5:4.5.8'
+	
+	 //testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+     //testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+     
 }
+ 
+tasks.processTestResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.2" 
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.2"
     }
- }
+}
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs << "-parameters"
+    options.compilerArgs += "-parameters"
 }
