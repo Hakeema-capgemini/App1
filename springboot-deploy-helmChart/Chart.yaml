@@ -1,0 +1,4 @@
+apiVersion: v2
+name: springboot-image-deployer
+description: Deploy app on openshift
+version: 0.1.0

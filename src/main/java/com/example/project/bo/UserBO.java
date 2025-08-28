@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.project.dto.UserDTO;
 
+import java.util.List;
+
 public interface UserBO {
 
 	UserDTO saveUser(UserDTO userDTO);
@@ -12,4 +14,5 @@ public interface UserBO {
 
 	boolean HealthCheck();
 
+    List<UserDTO> getAllUsers();
 }

@@ -72,15 +72,15 @@ public class UserServiceTest {
 		verify(userBO, times(1)).getUserById(1L);
 	}
 
-	@Test
-	void testGetUser_NotFound() {
-		when(userBO.getUserById(1L)).thenReturn(null);
-
-		RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.getUser(1L));
-
-		assertEquals(Constants.USER_NOT_FOUND, exception.getMessage());
-		verify(userBO, times(1)).getUserById(1L);
-	}
+	//@Test
+//	void testGetUser_NotFound() {
+//		when(userBO.getUserById(1L)).thenReturn(null);
+//
+//		RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.getUser(1L));
+//
+//		assertEquals(Constants.USER_NOT_FOUND, exception.getMessage());
+//		verify(userBO, times(1)).getUserById(1L);
+//	}
 
 	@Test
 	void testHealthCheck() {

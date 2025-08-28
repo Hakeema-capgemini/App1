@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: init-create-file
+          image: busybox
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              echo "This is a sample file created during pod initialization." > /app/data/sample.txt && \
+              echo "Name,Age,Department" > /app/data/sampleCSV.csv && \
+              echo "Zahra,22,Engineering" >> /app/data/sampleCSV.csv && \
+              echo "Mosi,25,Marketing" >> /app/data/sampleCSV.csv && \
+              echo "Sharia,28,Sales" >> /app/data/sampleCSV.csv
+          volumeMounts:
+            - name: student-data
+              mountPath: /app/data
+      containers:
+        - name: demo-container
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 8082
+          env:
+            - name: JAVA_APP_JAR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.name }}
+                  key: JAVA_APP_JAR
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: student-data
+              mountPath: /app/data
+      volumes:
+        - name: student-data
+          persistentVolumeClaim:
+            claimName: my-springbootapp-pvcdata

@@ -1,0 +1,17 @@
+apiVersion: build.openshift.io/v1 #specifies the API group and version used to define the object 
+kind: BuildConfig  # the resource type being created
+metadata:
+  name: {{ .Release.Name }} #name of the build config resource  
+spec:  #specification of the build 
+  output:
+    to:
+      kind: ImageStreamTag  # what kind of object output will be , here the image is pushed to a tag in openshift image stream
+      name: "{{ .Values.app.name}}:latest"   # name of the image to be pushed 
+  source:
+    type: {{ .Values.app.sourceType}} #what would be procided as S2I input ( possible valuees - Git , Binary , Dockerfile)
+  strategy:
+    type: Source  (i.e use source-to-image S2I as build strategy)
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag #what kind of image is used to build 
+        name: {{ .Values.app.s2iImage}}

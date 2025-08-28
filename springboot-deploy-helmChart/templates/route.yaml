@@ -1,0 +1,11 @@
+apiVersion: route.openshift.io/v1
+kind: Route 
+metadata: 
+  name: {{ .Values.route.name }}
+spec:
+  to:
+    kind: Service
+    name: {{ .Values.service.name }}
+  port:
+    targetPort: 8082
+  

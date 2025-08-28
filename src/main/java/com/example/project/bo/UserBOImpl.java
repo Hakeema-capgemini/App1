@@ -1,13 +1,17 @@
 package com.example.project.bo;
 
+import com.example.project.dao.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
+import java.util.stream.Collectors;
 import com.example.project.dto.UserDTO;
 import com.example.project.eo.UserEO;
+import com.example.project.mapper.UserMapper;
+import java.util.List;
+import java.util.List;
 
 @Service
 public class UserBOImpl implements UserBO {
@@ -15,7 +19,8 @@ public class UserBOImpl implements UserBO {
 	private static final Logger logger = LoggerFactory.getLogger(UserBOImpl.class);
 	@Autowired
 	private UserEO userEO;
-
+	@Autowired
+	private UserRepository userRepository;
 	@Override
 	public UserDTO saveUser(UserDTO userDTO) {
 		logger.info("Saving into BO layer:{}", userDTO);
@@ -37,5 +42,13 @@ public class UserBOImpl implements UserBO {
 			logger.error("Backend health check failed in BO layer", ex);
 			return false;
 		}
+	}
+
+	@Override
+	public List<UserDTO> getAllUsers() {
+		return userRepository.findAll()
+				.stream()
+				.map(UserMapper.INSTANCE::toDTO)
+				.collect(Collectors.toList());
 	}
 }

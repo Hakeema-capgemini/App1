@@ -1,0 +1,4 @@
+app:
+  name: springboot-app
+  s2iImage: openjdk-17-ubi8:latest
+  sourceType: Binary 

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-springbootapp-ingress
+  namespace: rizwanaa726-dev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: my-springbootapp-route-rizwanaa726-dev.apps.rm3.7wse.p1.openshiftapps.com
+    http:
+      paths:
+      - path: /app1/api/users/retrieve/2
+        pathType: Prefix
+        backend:
+          service:
+            name: my-springbootapp-service
+            port:
+              number: 8085

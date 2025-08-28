@@ -1,0 +1,19 @@
+replicaCount: 1
+#image pull
+image:
+  repository: image-registry.openshift-image-registry.svc:5000/rizwanaa726-dev/springboot-app 
+  tag: latest
+service:
+  name: my-springbootapp-service
+
+route:
+  name: my-springbootapp-route 
+   
+configMap:
+  name: project-config-map
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 70

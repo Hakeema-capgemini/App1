@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.util.List;
 import com.example.project.service.UserService;
 import com.example.project.util.Constants;
 import com.example.project.vo.UserVO;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -33,30 +33,52 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
 	@Operation(summary = "Create a new user")
 	@ApiResponses(value = {
-	    @ApiResponse(responseCode = "200", description = "User successfully created"),
-	    @ApiResponse(responseCode = "400", description = "Invalid input data")
+			@ApiResponse(responseCode = "200", description = "User successfully created"),
+			@ApiResponse(responseCode = "400", description = "Invalid input data")
 	})
 	@PostMapping("/create")
 	public UserVO createUser(@Valid @RequestBody UserVO userVO) {
 		logger.info(Constants.USER_CREATION_LOG);
 		return userService.createUser(userVO);
 	}
+
 	@Operation(summary = "Retrieve a user by ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "User not found")
-    })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User retrieved successfully"),
+			@ApiResponse(responseCode = "404", description = "User not found")
+	})
 	@GetMapping("/retrieve/{id}")
 	public UserVO getUser(@PathVariable("id") Long id) {
 		logger.info(Constants.RETRIEVE_USER_LOG);
 		return userService.getUser(id);
 	}
+	@Operation(summary = "Retrieve all user IDs")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User IDs retrieved successfully")
+	})
+	@GetMapping("/retrieve/all")
+	public ResponseEntity<List<UserVO>> getAllUserIds() {
+		logger.info("Retrieving all user Users");
+		List<UserVO> users = userService.getAllUsers();
+		return ResponseEntity.ok(users);
+	}
+	//async endpoint
+	@Operation(summary = "Asynchronously retrieve all users")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Users retrieved successfully")
+	})
+	@GetMapping("/retrieve/all-async")
+	public CompletableFuture<List<UserVO>> getAllUsersAsync() {
+		logger.info("Asynchronously retrieving all users");
+		return userService.getAllUsersAsync();
+	}
 	@Operation(summary = "Perform backend health check")
 	@ApiResponses(value = {
-	    @ApiResponse(responseCode = "200", description = "Backend call successful"),
-	    @ApiResponse(responseCode = "503", description = "Backend call failed")
+			@ApiResponse(responseCode = "200", description = "Backend call successful"),
+			@ApiResponse(responseCode = "503", description = "Backend call failed")
 	})
 	@GetMapping("/health")
 	public ResponseEntity<String> healthCheckBackend() {

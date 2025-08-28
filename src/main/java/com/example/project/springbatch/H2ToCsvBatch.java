@@ -48,6 +48,7 @@ public class H2ToCsvBatch {
     // 2. Processor - PassThroughItemProcessor 
     @Bean
     public PassThroughItemProcessor<UserVO> processor() {
+
         return new PassThroughItemProcessor<>();
     }
 
@@ -60,7 +61,7 @@ public class H2ToCsvBatch {
                 .delimited()
                 .delimiter(",")
                 .names("id", "name", "age")
-                .headerCallback(writer -> writer.write("ID,Name,Age")) // Add CSV header
+                .headerCallback(writer -> writer.write("Id,Name,Age")) // Add CSV header
                 .build();
     }
 
